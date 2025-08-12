@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math 350 - Ordinary Differential Equations - Fall 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.05) 10px,
+                rgba(255, 255, 255, 0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(100px); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 1rem;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-tab:hover::before {
+            left: 100%;
+        }
+
+        .nav-tab:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule-table th {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .schedule-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            transition: background-color 0.3s ease;
+        }
+
+        .schedule-table tr:hover td {
+            background-color: #f8f9fa;
+        }
+
+        .schedule-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .grade-scale {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .grade-item {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .grade-item:hover {
+            transform: scale(1.05);
+        }
+
+        .assignment-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .assignment-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .assignment-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .assignment-card h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .percentage {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #16a085, #f4d03f);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+
+        .office-hours {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .office-day {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+
+        .important-note {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 5px solid #fff;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 80px; height: 80px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-element" style="width: 120px; height: 120px; top: 20%; right: 10%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="width: 60px; height: 60px; bottom: 20%; left: 20%; animation-delay: 4s;"></div>
+        <div class="floating-element" style="width: 100px; height: 100px; bottom: 10%; right: 20%; animation-delay: 1s;"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Math 350-01</h1>
+            <div class="subtitle">Ordinary Differential Equations | Fall 2025 | Metropolitan State University</div>
+        </div>
+
+        <div class="content">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('overview')">Overview</button>
+                <button class="nav-tab" onclick="showTab('instructor')">Instructor</button>
+                <button class="nav-tab" onclick="showTab('assignments')">Assignments</button>
+                <button class="nav-tab" onclick="showTab('schedule')">Schedule</button>
+                <button class="nav-tab" onclick="showTab('policies')">Policies</button>
+            </div>
+
+            <div id="overview" class="tab-content active">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Course Information</h3>
+                        <p><strong>Course:</strong> Math 350-01 (4 credits)</p>
+                        <p><strong>Meeting Time:</strong> Thursdays 6:00 PM - 9:20 PM</p>
+                        <p><strong>Dates:</strong> August 28, 2025 - December 11, 2025</p>
+                        <p><strong>Location:</strong> SJH 154</p>
+                        <p><strong>Prerequisites:</strong> Math 211 Calculus II (Grade C- or higher)</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Course Description</h3>
+                        <p>This course develops the more advanced mathematical tools necessary for an in-depth analysis of dynamic models. Topics include first order differential equations, first order systems, linear systems, nonlinear systems and numerical methods.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Learning Outcomes</h3>
+                        <ul>
+                            <li>Apply analytical methods to find solutions to differential equations</li>
+                            <li>Apply qualitative techniques to investigate the behavior of solutions</li>
+                            <li>Use numerical techniques to approximate solutions to initial value problems</li>
+                            <li>Model diverse phenomena using differential equations</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Required Materials</h3>
+                        <p><strong>Textbook:</strong> Differential Equations, 4th Edition<br>
+                        <em>by Paul Blanchard, Robert L. Devaney, and Glen R. Hall</em><br>
+                        Published by Cengage Learning</p>
+                        <p><strong>Software:</strong> R and RStudio (free downloads required)</p>
+                        <p><strong>Tools:</strong> D2L and OneNote for course materials</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="instructor" class="tab-content">
+                <div class="contact-info">
+                    <h3>Instructor Information</h3>
+                    <p><strong>Rikki Wagstrom</strong> - Associate Professor of Mathematics</p>
+                    <p><strong>Office:</strong> Founders Hall 210</p>
+                    <p><strong>Phone:</strong> 651-793-1454</p>
+                    <p><strong>Email:</strong> Rikki.Wagstrom@metrostate.edu</p>
+                    <p><em>Email is the preferred method of contact. Please include the course name in the subject line and use your Metro State email account.</em></p>
+                    
+                    <h4 style="margin-top: 1.5rem;">Office Hours</h4>
+                    <div class="office-hours">
+                        <div class="office-day">
+                            <strong>Tuesday</strong><br>
+                            1:00 PM - 3:00 PM<br>
+                            <small>In person & Zoom</small>
+                        </div>
+                        <div class="office-day">
+                            <strong>Wednesday</strong><br>
+                            1:00 PM - 5:00 PM<br>
+                            <small>In person & Zoom</small>
+                        </div>
+                        <div class="office-day">
+                            <strong>Thursday</strong><br>
+                            1:00 PM - 5:00 PM<br>
+                            <small>In person & Zoom</small>
+                        </div>
+                    </div>
+                    <p><small>Please schedule appointments in advance. Zoom URL: https://minnstate.zoom.us/j/98434175420</small></p>
+                </div>
+
+                <div class="highlight">
+                    <h3>Math Center - Free Tutoring Available</h3>
+                    <p>Free mathematics tutoring is available for Math 350. You can schedule one-on-one sessions with our tutors both in person and via Zoom. Tutoring information is provided in OneNote.</p>
+                </div>
+            </div>
+
+            <div id="assignments" class="tab-content">
+                <div class="assignment-types">
+                    <div class="assignment-card">
+                        <h4>Quizzes <span class="percentage">35%</span></h4>
+                        <p>Short quizzes at the start of most classes (6:00-6:20 PM). 11 total quizzes, lowest 2 dropped. Use hardcopy notes and scientific calculator only.</p>
+                    </div>
+                    
+                    <div class="assignment-card">
+                        <h4>Homework <span class="percentage">20%</span></h4>
+                        <p>Weekly exercises from textbook or instructor. Must show detailed work and be legible. Late work accepted within one week for 50% credit.</p>
+                    </div>
+                    
+                    <div class="assignment-card">
+                        <h4>In-Class Work <span class="percentage">15%</span></h4>
+                        <p>Problems completed during class meetings. Full attendance required for credit. No make-up work available.</p>
+                    </div>
+                    
+                    <div class="assignment-card">
+                        <h4>Exams <span class="percentage">30%</span></h4>
+                        <p>Three exams (10% each), 50 minutes duration. Scientific calculator allowed, no notes. Make-ups must be scheduled in advance.</p>
+                    </div>
+                </div>
+
+                <h3>Grade Scale</h3>
+                <div class="grade-scale">
+                    <div class="grade-item">A<br>95-100%</div>
+                    <div class="grade-item">A-<br>90-94%</div>
+                    <div class="grade-item">B+<br>87-89%</div>
+                    <div class="grade-item">B<br>83-86%</div>
+                    <div class="grade-item">B-<br>80-82%</div>
+                    <div class="grade-item">C+<br>77-79%</div>
+                    <div class="grade-item">C<br>73-76%</div>
+                    <div class="grade-item">C-<br>70-72%</div>
+                    <div class="grade-item">D<br>60-69%</div>
+                    <div class="grade-item">F<br>0-59%</div>
+                </div>
+                
+                <div class="important-note">
+                    <strong>Competence/No Competence:</strong> Minimum 70% required for Competence grade.
+                </div>
+            </div>
+
+            <div id="schedule" class="tab-content">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Date Range</th>
+                            <th>Topics</th>
+                            <th>Assignments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Aug 28 - Sep 3</td>
+                            <td>Course Policies, Modeling via DE (1.1), Separation of Variables (1.2)</td>
+                            <td>Read 1.1-1.2, HW problems, Install R & RStudio</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Sep 4 - 10</td>
+                            <td><strong>Quiz 1</strong><br>Slope Fields (1.3), Euler's Method (1.4), Existence & Uniqueness (1.5)</td>
+                            <td>Read 1.3-1.5, R coding for Euler's Method</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Sep 11 - 17</td>
+                            <td><strong>Quiz 2</strong><br>Equilibria & Phase Line (1.6), Bifurcations (1.7)</td>
+                            <td>Read 1.6-1.7, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Sep 18 - 24</td>
+                            <td><strong>Quiz 3</strong><br>Linear Equations (1.8), Integrating Factors (1.9)</td>
+                            <td>Read 1.8-1.9, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Sep 25 - Oct 1</td>
+                            <td><strong>Quiz 4</strong><br>Calibration of Models (Part 1)</td>
+                            <td>Instructor-supplied assignment</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>Oct 2 - 8</td>
+                            <td><strong>Exam 1</strong><br>Modeling via Systems (2.1), Geometry of Systems (2.2)</td>
+                            <td>Read 2.1-2.2, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Oct 9 - 15</td>
+                            <td><strong>Quiz 5</strong><br>Damped Harmonic Oscillator (2.3), Euler's Method for Systems (2.5)</td>
+                            <td>Read 2.3, 2.5, R coding & ODE Solver</td>
+                        </tr>
+                        <tr>
+                            <td>8</td>
+                            <td>Oct 16 - 22</td>
+                            <td><strong>Quiz 6</strong><br>SIR Model (2.7), Properties of Linear Systems (3.1)</td>
+                            <td>Read 2.7, 3.1, Use R ODE Solver</td>
+                        </tr>
+                        <tr>
+                            <td>9</td>
+                            <td>Oct 23 - 29</td>
+                            <td><strong>Quiz 7</strong><br>Straight-Line Solutions (3.2), Phase Portraits (3.3)</td>
+                            <td>Read 3.2-3.3, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>Oct 30 - Nov 5</td>
+                            <td><strong>Exam 2</strong><br>Complex Eigenvalues (3.4), Repeated/Zero Eigenvalues (3.5), Second-Order Linear (3.6)</td>
+                            <td>Read 3.4-3.6, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Nov 6 - 12</td>
+                            <td><strong>Quiz 8</strong><br>Forced Harmonic Oscillators (4.1)</td>
+                            <td>Read 4.1, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>Nov 13 - 19</td>
+                            <td><strong>Quiz 9</strong><br>Sinusoidal Forcing (4.2), Undamped Forcing & Resonance (4.3)</td>
+                            <td>Read 4.2-4.3, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>13</td>
+                            <td>Nov 20 - Dec 3</td>
+                            <td><strong>Quiz 10</strong><br>Nonlinear Systems: Equilibrium Analysis (5.1)<br><em>No class Nov 27</em></td>
+                            <td>Read 5.1, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>14</td>
+                            <td>Dec 4 - 10</td>
+                            <td><strong>Quiz 11</strong><br>Nonlinear Systems: Qualitative Analysis (5.2)</td>
+                            <td>Read 5.2, HW problems</td>
+                        </tr>
+                        <tr>
+                            <td>15</td>
+                            <td>Dec 11</td>
+                            <td><strong>Exam 3</strong><br>Calibration (Parameter Estimation)</td>
+                            <td>Instructor-supplied assignment</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="policies" class="tab-content">
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Attendance Policy</h3>
+                        <p>In-person attendance is required for the entire class meeting (6:00 PM - 9:20 PM). In case of severe weather, class may meet remotely via Zoom with email notification.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Technology Requirements</h3>
+                        <p>Computer must pass D2L System Check. Requires Chrome browser, internet access (minimum 2x/week), and proficiency with online resources. Campus email required for all communications.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Academic Honesty</h3>
+                        <p>Plagiarism results in one-time redo opportunity with up to 50% point reduction. Repeat offenses result in zero points and potential course failure. Respect intellectual property and copyright laws.</p>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3>Accessibility Resources</h3>
+                        <p>Students with disabilities should contact the Center for Accessibility Resources (651-793-1549) to discuss accommodations including early registration, note-takers, interpreters, and testing arrangements.</p>
+                    </div>
+                </div>
+
+                <div class="important-note">
+                    <h3>Important Notes</h3>
+                    <ul>
+                        <li>Students must attend at least one day of class in the first two weeks or be automatically dropped</li>
+                        <li>Incompletes are considered for students with C- or higher performance experiencing unexpected barriers</li>
+                        <li>All student support services are available including cultural, veteran, LGBTQ, and international student services</li>
+                        <li>Respectful discussion is expected - hostile behavior should be reported through proper channels</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling for better UX
+            const container = document.querySelector('.container');
+            
+            // Add hover effects to table rows
+            const tableRows = document.querySelectorAll('.schedule-table tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+            
+            // Add click animation to nav tabs
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
